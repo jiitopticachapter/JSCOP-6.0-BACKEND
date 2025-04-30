@@ -21,6 +21,8 @@ app.use(logger());
 app.use(
     cors({
         origin: [
+            "http://172.20.10.3",
+            "http://172.20.10.4",
             "http://localhost:5173",
             "http://localhost:5174",
             "http://localhost:4000",
@@ -49,6 +51,7 @@ app.use("/volunteer", volunteer);
 
 const mailRoute = require("./routes/mailRoutes");
 app.use("/sendMail", mailRoute);
+
 
 const registerRoute = require("./routes/userRoutes");
 const { log } = require("console");

@@ -3,7 +3,7 @@ const qrCode = require("../models/qrCodeModel");
 const { v4: uuidv4 } = require("uuid");
 const nodemailer = require("nodemailer");
 const QRCode = require("qrcode");
-const tickettemPlate = require("../mail/templates/tickettemplate");
+const tickettemPlate = require("../templates/tickettemplate");
 
 //creating ticket and sending it to Email
 module.exports.generateQRCode = async (req, res) => {
@@ -27,7 +27,7 @@ module.exports.generateQRCode = async (req, res) => {
         owner = userfound._id;
         const newQrCode = new qrCode({ user: owner, qr_id });
         await newQrCode.save();
-        await sendTicket(email, qr_id);
+        await sendTicket(email, qr_id, name);
         res.status(201).json("QR Code generated successfully");
     } else {
         res.status(400).send("User does not exist");
@@ -37,16 +37,16 @@ module.exports.generateQRCode = async (req, res) => {
 module.exports.sendQrCodeThroughEmail = async (req, res) => {
     const { userid } = req.params;
     const user = await User.findById(userid);
-    const { email } = user;
+    const { email, name } = user;
     const qrCodeUser = await qrCode.findOne({ user: user._id });
     if (!qrCodeUser) {
         return res.status(400).send("User does not have a QR Code");
     }
-    await sendTicket(email, qrCodeUser.qr_id);
+    await sendTicket(email, qrCodeUser.qr_id, name);
     res.status(200).json("QR Code sent successfully");
 };
 
-const sendTicket = async (email, qr_id) => {
+const sendTicket = async (email, qr_id, name) => {
     let config = {
         service: "gmail",
         auth: {
@@ -55,9 +55,9 @@ const sendTicket = async (email, qr_id) => {
         },
     };
 
-    const finalqrid = `${process.env.DOMAIN}/admin/sendOTP/${qr_id}`;
+   // const finalqrid = `${process.env.DOMAIN}/admin/sendOTP/${qr_id}`;
 
-    const qrCodeimg = await QRCode.toDataURL(finalqrid, {
+    const qrCodeimg = await QRCode.toDataURL(qr_id, {
         width: 400,
         margin: 2,
         color: {
@@ -66,20 +66,60 @@ const sendTicket = async (email, qr_id) => {
         },
     });
 
+    const nodemailer = require("nodemailer");
+    const hbs = require("nodemailer-express-handlebars");
+    const path = require("path");
+    // Create transporter
     let transporter = nodemailer.createTransport(config);
+    
+    // Configure handlebars
+    transporter.use('compile', hbs({
+        viewEngine: {
+          extname: '.handlebars',
+          layoutsDir: path.resolve('./templates'),
+          defaultLayout: false,
+          partialsDir: path.resolve('./templates'),
+        },
+        viewPath: path.resolve('./templates'),
+        extName: '.handlebars',
+      }));
+
+
     const mailOptions = {
         from: `${process.env.EMAIL}`,
-        to: `${email}`,
-        subject: "Your Ticket For the event is here", // subject
-        html: tickettemPlate(),
+        to:   `${email}`,
+        subject: "Your Ticket For the Event is Here",
+        template: "ticket", // Name of the .handlebars file (without extension)
+        context: {
+          // dynamic values used in the template
+          username: name, // for example
+          eventName: "My Cool Fest",
+          cid: "unique@nodemailer.com", // referenced in the template
+        },
         attachments: [
-            {
-                filename: "ticket.png",
-                content: qrCodeimg.split("base64,")[1],
-                encoding: "base64",
-            },
+          {
+            filename: "ticket.png",
+            content: qrCodeimg.split("base64,")[1],
+            encoding: "base64",
+            cid: "unique@nodemailer.com", // 👈 used inside the template
+          },
         ],
-    };
+      };
+      
+    // let transporter = nodemailer.createTransport(config);
+    // const mailOptions = {
+    //     from: `${process.env.EMAIL}`,
+    //     to: `${email}`,
+    //     subject: "Your Ticket For the event is here", // subject
+    //     html: tickettemPlate(),
+    //     attachments: [
+    //         {
+    //             filename: "ticket.png",
+    //             content: qrCodeimg.split("base64,")[1],
+    //             encoding: "base64",
+    //         },
+    //     ],
+    // };
 
     transporter
         .sendMail(mailOptions)

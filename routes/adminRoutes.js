@@ -14,7 +14,7 @@ router
 
 router
     .route("/user/:id")
-    .get(isAdmin, catchAsync(admin.getUser))
+    .get(catchAsync(admin.getUser))
     .delete(isAdmin, catchAsync(admin.deleteUser))
     .put(isAdmin, catchAsync(admin.updateUser));
 
@@ -43,5 +43,10 @@ router
 router
     .route("/verifyTicket/:ticketid")
     .post(isAdmin, catchAsync(admin.validateTicket));
+
+
+router
+    .route("/getQrUser/:id")
+    .get(catchAsync(admin.getQrCode));
 
 module.exports = router;

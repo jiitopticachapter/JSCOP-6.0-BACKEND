@@ -10,12 +10,12 @@ router.post("/register-new", async (req, res) => {
     console.log(req.body);
 
    // res.json({ code: 200, status: "Message Sent"});
-     const { name, email, phone, batch, enroll, enrollmentType, branch, college, image } = req.body;
+     const { name, email, phone, batch, enroll, enrollmentType, branch, college, image, selectedDay } = req.body;
      try {
-        if(!name || !email || !phone ||  !college || !image){
+        if (!name || !email || !phone || !college || !image || !selectedDay) {
             console.log("Please fill all the fields!!");
-            return res.status(400).json({msg: "Please fill all the fields!!"});
-        }
+            return res.status(400).json({ msg: "Please fill all the fields!!" });
+        }        
         const CheckEmail = await new_user_model.findOne({ email: email });
         if (CheckEmail) {
             console.log("Email already exists!!");
@@ -33,6 +33,7 @@ router.post("/register-new", async (req, res) => {
             enrollmentNo: enroll,
             branch,
             enrollmentType,
+            selectedDay,
             verified: false,
             college,
             payment: {
@@ -41,15 +42,13 @@ router.post("/register-new", async (req, res) => {
             }
          }
         console.log(User_details);
-        const save_data = await new new_user_model(User_details).save().then(() => {
-           console.log("User data saved in the database!!");
-       }).catch(() => {
-              res.status(500).json({msg: "Internal Server Error!!"});
-       });
+        const new_data = await new new_user_model(User_details).save();
+        console.log("User data saved in the database!!");        
 
         res.status(201).json({
             success: true,
-          User_details
+            message: "User data saved in the database!!",
+            data: new_data,
         });
     }
      } catch (err) {

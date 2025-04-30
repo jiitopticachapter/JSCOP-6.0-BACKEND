@@ -42,7 +42,6 @@ const userSchema = new schema({
         },
         default: "NA",
     },
-
     branch: {
         type: String,
         required: function () {
@@ -55,6 +54,11 @@ const userSchema = new schema({
         type: Boolean,
         default: false,
     },
+    selectedDay: {
+        type: String,
+        required: true,
+        enum: ['day1', 'day2', 'both'],
+    },
     enrollmentType: {
        type: String,
        required: function () {
@@ -62,7 +66,6 @@ const userSchema = new schema({
     },
        default: "NA"
     },
-   
     payment: {
         public_id: {
             type: String,
