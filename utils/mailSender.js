@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer');
 
 const mailSender = async (email, title, body) => {
     let config = {
-        host: 'smtp.gmail.com',
+        host: 'mail.jiitopticachapter.com',
         port: 587,
         secure: false, // use TLS
         auth: {
