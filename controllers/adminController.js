@@ -32,7 +32,7 @@ module.exports.adminlogout = (req, res) => {
 module.exports.getAllUsers = async (req, res) => {
     console.log("hello world");
     const users = await generalUsers.find({});
-    console.log(users);
+    // console.log(users);
     res.json(users);
 };
 
@@ -62,11 +62,31 @@ module.exports.getQrCode = async (req, res) => {
 };
 
 
+const mongoose = require("mongoose");
+
 module.exports.deleteUser = async (req, res) => {
     const { id } = req.params;
-    await generalUsers.findByIdAndDelete(id);
-    res.json("User Deleted");
+    console.log("Deleting user with ID:", id);
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: "Invalid user ID" });
+    }
+
+    try {
+        const deletedUser = await generalUsers.findByIdAndDelete(id);
+            console.log("Deleted user:", deletedUser);
+        if (!deletedUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        return res.status(200).json({ message: "User deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting user:", error);
+       return res.status(500).json({ message: "Error deleting user, please try again later" });
+    }
 };
+
+
 
 module.exports.updateUser = async (req, res) => {
     res.json("user updated");
