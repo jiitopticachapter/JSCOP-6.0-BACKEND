@@ -32,7 +32,7 @@ app.use(
             "https://jscop.jiitopticachapter.com",
             "http://143.244.136.203",
             "https://jscop-6-0-frontend-bc8z.onrender.com",
-            "https://main--jscop6frontend.netlify.app",
+            "https://jscop-admin-portal.onrender.com",
         ],
         credentials: true,
     })
