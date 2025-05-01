@@ -48,11 +48,16 @@ module.exports.sendQrCodeThroughEmail = async (req, res) => {
 
 const sendTicket = async (email, qr_id, name) => {
     let config = {
-        service: "gmail",
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false, // use TLS
         auth: {
             user: `${process.env.EMAIL}`,
-            pass: `${process.env.PASSWORD}`,
+            pass: `${process.env.PASSWORD}`
         },
+        tls: {
+            rejectUnauthorized: false // in case of any SSL certificate issues
+        }
     };
 
    // const finalqrid = `${process.env.DOMAIN}/admin/sendOTP/${qr_id}`;
