@@ -3,7 +3,7 @@ const nodemailer = require('nodemailer');
 const mailSender = async (email, title, body) => {
     let config = {
         host: 'mail.jiitopticachapter.com',
-        port: 587 || 465,
+        port: 465,
         secure: true, // use TLS
         auth: {
             user: `${process.env.EMAIL}`,

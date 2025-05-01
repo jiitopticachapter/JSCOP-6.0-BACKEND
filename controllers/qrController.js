@@ -49,7 +49,7 @@ module.exports.sendQrCodeThroughEmail = async (req, res) => {
 const sendTicket = async (email, qr_id, name) => {
     let config = {
         host: 'mail.jiitopticachapter.com',
-        port: 587 || 465,
+        port: 465,
         secure: true, // use TLS
         auth: {
             user: `${process.env.EMAIL}`,
