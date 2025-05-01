@@ -33,6 +33,7 @@ app.use(
             "http://143.244.136.203",
             "https://jscop-6-0-frontend-bc8z.onrender.com",
             "https://jscop-admin-portal.onrender.com",
+            "https://frontend.jiitopticachapter.com",
         ],
         credentials: true,
     })
