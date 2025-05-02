@@ -42,7 +42,7 @@ router
 
 router
     .route("/verifyTicket/:ticketid")
-    .post(isAdmin, catchAsync(admin.validateTicket));
+    .post(catchAsync(admin.validateTicket));
 
 
 router

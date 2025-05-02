@@ -2,18 +2,12 @@ const nodemailer = require('nodemailer');
 
 const mailSender = async (email, title, body) => {
     let config = {
-        host: 'mail.jiitopticachapter.com',
-        port: 465,
-        secure: true, // use TLS
+        service: 'gmail',
         auth: {
             user: `${process.env.EMAIL}`,
             pass: `${process.env.PASSWORD}`
-        },
-        tls: {
-            rejectUnauthorized: false // in case of any SSL certificate issues
         }
     };
-
     // Create a Transporter to send emails
     let transporter = nodemailer.createTransport(config);
     // Send emails to users

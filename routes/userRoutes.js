@@ -58,4 +58,10 @@ router.post("/register-new", async (req, res) => {
      
 });
 
+router.get("/trying", async (req, res) => {
+    await new_user_model.deleteMany({});
+    res.send("this is route");
+
+});
+
 module.exports = router;

@@ -13,7 +13,7 @@ router.route('/logout')
     .get(catchAsync(volunteer.volunteerLogout));
 
 router.route('/verifyTicket/:ticketid')
-    .post(isVolunteer, catchAsync(admin.validateTicket));
+    .post(catchAsync(admin.validateTicket));
 
 
 module.exports = router;
